@@ -32,7 +32,7 @@ The API is now running at `http://127.0.0.1:8000/api/`. Django admin is at `http
 
 | Role    | Username | Password       |
 |---------|----------|----------------|
-| Admin   | `admin`  | `admin12345`   |
+| Admin   | `admin`  | `Admin@12345`   |
 | Faculty | `f201`   | `faculty12345` |
 | Student | `s101`   | `student12345` |
 
