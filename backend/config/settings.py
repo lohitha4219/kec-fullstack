@@ -117,10 +117,10 @@ USE_I18N = True
 USE_TZ = True
 
 # --- Static -------------------------------------------------------
+STATIC_URL = '/static/'
+STATIC_ROOT = BASE_DIR / 'staticfiles'
 
-STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
 # --- DRF / JWT -------------------------------------------------------
 
 REST_FRAMEWORK = {

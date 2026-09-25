@@ -7,3 +7,5 @@ python-dotenv==1.0.1
 
 # Uncomment if using MySQL (set DB_ENGINE=mysql in .env) instead of the default SQLite:
 # mysqlclient==2.2.4
+
+gunicorn==23.0.0
