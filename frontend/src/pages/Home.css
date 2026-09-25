@@ -1,0 +1,849 @@
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.home-page {
+  width: 100%;
+  overflow-x: hidden;
+}
+
+/* =========================
+   NAVBAR
+========================= */
+
+.navbar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 82px;
+  padding: 10px 6%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  z-index: 10;
+
+  background: rgba(0, 25, 55, 0.75);
+  backdrop-filter: blur(8px);
+}
+
+.college-brand {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.college-logo {
+  width: 58px;
+  height: 58px;
+  object-fit: contain;
+  border-radius: 50%;
+  background: white;
+  padding: 3px;
+}
+
+.college-name h2 {
+  margin: 0;
+  color: white;
+  font-size: 20px;
+}
+
+.college-name p {
+  margin: 4px 0 0;
+  color: #d9e8f5;
+  font-size: 12px;
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+}
+
+.nav-links a {
+  color: white;
+  text-decoration: none;
+  font-size: 15px;
+  font-weight: 500;
+  transition: 0.3s;
+}
+
+.nav-links a:hover {
+  color: #7dd3fc;
+}
+
+.register-button {
+  padding: 11px 20px;
+  border: 1px solid white;
+  border-radius: 6px;
+}
+
+.register-button:hover {
+  background: white;
+  color: #003b66 !important;
+}
+
+
+/* =========================
+   HERO
+========================= */
+
+.hero {
+  position: relative;
+  min-height: 720px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background-image: url("/building.jfif");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.hero-overlay {
+  position: absolute;
+  inset: 0;
+
+  background:
+    linear-gradient(
+      90deg,
+      rgba(0, 30, 65, 0.88),
+      rgba(0, 55, 100, 0.62),
+      rgba(0, 0, 0, 0.30)
+    );
+}
+
+.hero-content {
+  position: relative;
+  z-index: 2;
+
+  width: 90%;
+  max-width: 900px;
+
+  text-align: center;
+  color: white;
+
+  padding-top: 80px;
+}
+
+.welcome-text {
+  margin-bottom: 12px;
+  font-size: 15px;
+  font-weight: bold;
+  letter-spacing: 5px;
+  color: #7dd3fc;
+}
+
+.hero-content h1 {
+  margin: 0;
+  font-size: 58px;
+  line-height: 1.1;
+}
+
+.hero-content h2 {
+  margin: 18px 0;
+  font-size: 28px;
+  font-weight: 400;
+}
+
+.hero-description {
+  max-width: 700px;
+  margin: 0 auto 30px;
+
+  font-size: 17px;
+  line-height: 1.7;
+  color: #e8f4ff;
+}
+
+.hero-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+}
+
+.primary-button,
+.secondary-button {
+  display: inline-block;
+  padding: 14px 28px;
+
+  border-radius: 6px;
+
+  text-decoration: none;
+  font-weight: bold;
+
+  transition: 0.3s;
+}
+
+.primary-button {
+  background: #0284c7;
+  color: white;
+}
+
+.primary-button:hover {
+  background: #0369a1;
+  transform: translateY(-2px);
+}
+
+.secondary-button {
+  color: white;
+  border: 1px solid white;
+}
+
+.secondary-button:hover {
+  background: white;
+  color: #003b66;
+}
+
+
+/* =========================
+   FEATURES
+========================= */
+
+.features {
+  padding: 90px 7%;
+  background: #f7fafc;
+}
+
+.section-heading {
+  text-align: center;
+  margin-bottom: 55px;
+}
+
+.section-heading p {
+  margin: 0 0 8px;
+
+  color: #0284c7;
+  font-size: 13px;
+  font-weight: bold;
+  letter-spacing: 3px;
+}
+
+.section-heading h2 {
+  margin: 0 0 10px;
+
+  color: #073763;
+  font-size: 38px;
+}
+
+.section-heading span {
+  color: #64748b;
+  font-size: 16px;
+}
+
+.feature-grid {
+  max-width: 1200px;
+  margin: auto;
+
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 25px;
+}
+
+.feature-card {
+  padding: 32px 25px;
+
+  background: white;
+  border-radius: 10px;
+
+  text-align: center;
+
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.07);
+
+  transition: 0.3s;
+}
+
+.feature-card:hover {
+  transform: translateY(-7px);
+  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.12);
+}
+
+.feature-icon {
+  font-size: 42px;
+  margin-bottom: 15px;
+}
+
+.feature-card h3 {
+  margin: 0 0 10px;
+
+  color: #073763;
+  font-size: 20px;
+}
+
+.feature-card p {
+  margin: 0;
+
+  color: #64748b;
+  line-height: 1.6;
+}
+
+
+/* =========================
+   ABOUT
+========================= */
+
+.about {
+  padding: 90px 7%;
+
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 70px;
+
+  align-items: center;
+
+  background: white;
+}
+
+.about-image img {
+  width: 100%;
+  height: 420px;
+
+  object-fit: cover;
+  border-radius: 12px;
+
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+}
+
+.about-content {
+  max-width: 550px;
+}
+
+.about-label {
+  margin-bottom: 10px;
+
+  color: #0284c7;
+  font-size: 13px;
+  font-weight: bold;
+  letter-spacing: 3px;
+}
+
+.about-content h2 {
+  margin: 0 0 20px;
+
+  color: #073763;
+  font-size: 40px;
+  line-height: 1.2;
+}
+
+.about-content h2 span {
+  color: #0284c7;
+}
+
+.about-content p {
+  color: #64748b;
+  font-size: 16px;
+  line-height: 1.8;
+}
+
+.about-button {
+  display: inline-block;
+
+  margin-top: 15px;
+  padding: 13px 24px;
+
+  background: #0284c7;
+  color: white;
+
+  border-radius: 6px;
+
+  text-decoration: none;
+  font-weight: bold;
+
+  transition: 0.3s;
+}
+
+.about-button:hover {
+  background: #0369a1;
+}
+
+
+/* =========================================
+   FOOTER
+========================================= */
+
+.footer {
+  width: 100%;
+  background: #062f4f;
+  color: #ffffff;
+  padding: 60px 7% 0;
+}
+
+
+/* =========================================
+   FOOTER CONTAINER
+========================================= */
+
+.footer-container {
+  width: 100%;
+  max-width: 1250px;
+
+  margin: 0 auto;
+
+  display: grid;
+
+  grid-template-columns:
+    2fr
+    1fr
+    1fr
+    1.6fr;
+
+  gap: 55px;
+
+  padding-bottom: 50px;
+}
+
+
+/* =========================================
+   FOOTER COLUMNS
+========================================= */
+
+.footer-column {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+
+/* =========================================
+   COLLEGE INFORMATION
+========================================= */
+
+.college-footer {
+  max-width: 390px;
+}
+
+.college-footer h3 {
+  margin: 0 0 8px;
+
+  color: #ffffff;
+
+  font-size: 22px;
+  font-weight: 600;
+}
+
+.footer-tagline {
+  margin: 0 0 14px;
+
+  color: #38bdf8;
+
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.footer-description {
+  max-width: 370px;
+
+  margin: 0;
+
+  color: #b9c9d8;
+
+  font-size: 14px;
+
+  line-height: 1.7;
+}
+
+
+/* =========================================
+   FOOTER HEADINGS
+========================================= */
+
+.footer-column h4 {
+  position: relative;
+
+  margin: 3px 0 25px;
+
+  color: #ffffff;
+
+  font-size: 18px;
+
+  font-weight: 600;
+}
+
+.footer-column h4::after {
+  content: "";
+
+  display: block;
+
+  width: 35px;
+  height: 3px;
+
+  margin-top: 9px;
+
+  background: #0ea5e9;
+
+  border-radius: 5px;
+}
+
+
+/* =========================================
+   FOOTER LINKS
+========================================= */
+
+.footer-column > a {
+  margin-bottom: 13px;
+
+  color: #cbd5e1;
+
+  text-decoration: none;
+
+  font-size: 14px;
+
+  transition: all 0.25s ease;
+}
+
+.footer-column > a:hover {
+  color: #38bdf8;
+
+  transform: translateX(5px);
+}
+
+
+/* =========================================
+   SOCIAL MEDIA
+========================================= */
+
+.social-links {
+  display: flex;
+
+  align-items: center;
+
+  flex-wrap: wrap;
+
+  gap: 9px;
+
+  margin-top: 22px;
+}
+
+.social-icon {
+  display: flex !important;
+
+  align-items: center;
+  justify-content: center;
+
+  gap: 6px;
+
+  min-width: 90px;
+  height: 36px;
+
+  padding: 0 12px;
+
+  margin: 0 !important;
+
+  border: 1px solid rgba(255, 255, 255, 0.22);
+
+  border-radius: 20px;
+
+  background: rgba(255, 255, 255, 0.04);
+
+  color: #dbeafe !important;
+
+  text-decoration: none !important;
+
+  font-size: 12px !important;
+
+  transition: all 0.3s ease;
+}
+
+.social-icon span {
+  font-size: 15px;
+
+  font-weight: bold;
+}
+
+.social-icon:hover {
+  background: #0ea5e9;
+
+  border-color: #0ea5e9;
+
+  color: #ffffff !important;
+
+  transform: translateY(-3px);
+}
+
+
+/* =========================================
+   CONTACT INFORMATION
+========================================= */
+
+.contact-column {
+  gap: 0;
+}
+
+.contact-item {
+  display: flex;
+
+  align-items: flex-start;
+
+  gap: 12px;
+
+  width: 100%;
+
+  margin-bottom: 16px;
+}
+
+.contact-icon {
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  flex-shrink: 0;
+
+  width: 30px;
+  height: 30px;
+
+  border-radius: 50%;
+
+  background: rgba(14, 165, 233, 0.15);
+
+  color: #38bdf8;
+
+  font-size: 14px;
+}
+
+.contact-item p {
+  margin: 5px 0 0;
+
+  color: #cbd5e1;
+
+  font-size: 13px;
+
+  line-height: 1.5;
+}
+
+
+/* =========================================
+   FOOTER BOTTOM
+========================================= */
+
+.footer-bottom {
+  width: 100%;
+  max-width: 1250px;
+
+  margin: 0 auto;
+
+  padding: 22px 0;
+
+  border-top:
+    1px solid rgba(255, 255, 255, 0.15);
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  gap: 20px;
+}
+
+.footer-bottom p {
+  margin: 0;
+
+  color: #94a3b8;
+
+  font-size: 13px;
+}
+
+.footer-bottom-links {
+  display: flex;
+
+  align-items: center;
+
+  gap: 25px;
+}
+
+.footer-bottom-links a {
+  color: #94a3b8;
+
+  text-decoration: none;
+
+  font-size: 13px;
+
+  transition: 0.3s;
+}
+
+.footer-bottom-links a:hover {
+  color: #38bdf8;
+}
+
+
+/* =========================================
+   TABLET
+========================================= */
+
+@media (max-width: 1000px) {
+
+  .footer-container {
+    grid-template-columns:
+      1.5fr
+      1fr
+      1fr;
+
+    gap: 40px;
+  }
+
+  .college-footer {
+    grid-column: span 3;
+
+    max-width: 600px;
+  }
+
+}
+
+
+/* =========================================
+   MOBILE
+========================================= */
+
+@media (max-width: 650px) {
+
+  .footer {
+    padding: 45px 25px 0;
+  }
+
+  .footer-container {
+    grid-template-columns: 1fr;
+
+    gap: 35px;
+
+    padding-bottom: 40px;
+  }
+
+  .college-footer {
+    grid-column: auto;
+
+    max-width: 100%;
+  }
+
+  .social-links {
+    gap: 8px;
+  }
+
+  .social-icon {
+    min-width: 85px;
+  }
+
+  .footer-bottom {
+    flex-direction: column;
+
+    text-align: center;
+
+    padding: 20px 0;
+  }
+
+  .footer-bottom-links {
+    justify-content: center;
+
+    flex-wrap: wrap;
+
+    gap: 15px;
+  }
+
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media (max-width: 900px) {
+
+  .navbar {
+    padding: 10px 3%;
+  }
+
+  .nav-links {
+    gap: 15px;
+  }
+
+  .hero-content h1 {
+    font-size: 44px;
+  }
+
+  .feature-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .about {
+    grid-template-columns: 1fr;
+  }
+
+  .about-content {
+    max-width: 100%;
+  }
+}
+
+
+@media (max-width: 650px) {
+
+  .navbar {
+    height: auto;
+    padding: 12px 20px;
+
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .college-name h2 {
+    font-size: 16px;
+  }
+
+  .nav-links {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .hero {
+    min-height: 700px;
+  }
+
+  .hero-content {
+    padding-top: 130px;
+  }
+
+  .hero-content h1 {
+    font-size: 36px;
+  }
+
+  .hero-content h2 {
+    font-size: 21px;
+  }
+
+  .hero-buttons {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .feature-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .about {
+    padding: 60px 5%;
+  }
+
+  .about-image img {
+    height: 300px;
+  }
+
+  .about-content h2 {
+    font-size: 32px;
+  }
+}
+.footer-container {
+  grid-template-columns:
+    1.5fr
+    1fr
+    1fr;
+
+  gap: 40px;
+}
