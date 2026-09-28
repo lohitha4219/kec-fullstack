@@ -129,30 +129,12 @@ TEMPLATES = [
 # ---------------------------------------------------------------------
 # DATABASE
 # ---------------------------------------------------------------------
-#
-# LOCAL:
-#     Uses SQLite -> backend/db.sqlite3
-#
-# RENDER:
-#     Uses PostgreSQL through DATABASE_URL
-#
-# MYSQL:
-#     Uses MySQL when DB_ENGINE=mysql
-#
-# IMPORTANT:
-#     DATABASE_URL must be configured in Render Environment Variables.
-#
-# ---------------------------------------------------------------------
 
 DB_ENGINE = os.environ.get("DB_ENGINE", "").lower()
 DATABASE_URL = os.environ.get("DATABASE_URL")
 
 
 if DB_ENGINE == "mysql":
-
-    # -------------------------------------------------------------
-    # MYSQL
-    # -------------------------------------------------------------
 
     DATABASES = {
         "default": {
@@ -186,19 +168,6 @@ if DB_ENGINE == "mysql":
 
 elif DATABASE_URL:
 
-    # -------------------------------------------------------------
-    # POSTGRESQL
-    # -------------------------------------------------------------
-    #
-    # Used on Render.
-    #
-    # DATABASE_URL example:
-    #
-    # postgresql://username:password@hostname:5432/database
-    #
-    # The real value is stored in Render Environment Variables.
-    #
-
     DATABASES = {
         "default": dj_database_url.parse(
             DATABASE_URL,
@@ -209,13 +178,6 @@ elif DATABASE_URL:
 
 
 else:
-
-    # -------------------------------------------------------------
-    # SQLITE
-    # -------------------------------------------------------------
-    #
-    # Used during local development.
-    #
 
     SQLITE_DB_PATH = os.environ.get(
         "SQLITE_DB_PATH",
@@ -337,15 +299,35 @@ SIMPLE_JWT = {
 # ---------------------------------------------------------------------
 # CORS
 # ---------------------------------------------------------------------
+#
+# Local frontend
+# Production frontend
+# ---------------------------------------------------------------------
 
 CORS_ALLOWED_ORIGINS = [
-    origin.strip()
-    for origin in os.environ.get(
-        "CORS_ALLOWED_ORIGINS",
-        "http://localhost:5173,http://127.0.0.1:5173",
-    ).split(",")
-    if origin.strip()
+    # Local development
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
+
+    # Vercel production frontend
+    "https://kec-fullstack.vercel.app",
 ]
+
+
+# Also allow additional origins supplied through Render
+# environment variables.
+extra_cors_origins = os.environ.get(
+    "CORS_ALLOWED_ORIGINS",
+    "",
+)
+
+if extra_cors_origins:
+    for origin in extra_cors_origins.split(","):
+        origin = origin.strip()
+
+        if origin and origin not in CORS_ALLOWED_ORIGINS:
+            CORS_ALLOWED_ORIGINS.append(origin)
+
 
 CORS_ALLOW_CREDENTIALS = True
 
@@ -353,15 +335,28 @@ CORS_ALLOW_CREDENTIALS = True
 # ---------------------------------------------------------------------
 # CSRF
 # ---------------------------------------------------------------------
+#
+# Vercel frontend must be trusted by Django.
+# ---------------------------------------------------------------------
 
 CSRF_TRUSTED_ORIGINS = [
-    origin.strip()
-    for origin in os.environ.get(
-        "CSRF_TRUSTED_ORIGINS",
-        "",
-    ).split(",")
-    if origin.strip()
+    "https://kec-fullstack.vercel.app",
 ]
+
+
+# Also allow additional CSRF origins supplied through Render
+# environment variables.
+extra_csrf_origins = os.environ.get(
+    "CSRF_TRUSTED_ORIGINS",
+    "",
+)
+
+if extra_csrf_origins:
+    for origin in extra_csrf_origins.split(","):
+        origin = origin.strip()
+
+        if origin and origin not in CSRF_TRUSTED_ORIGINS:
+            CSRF_TRUSTED_ORIGINS.append(origin)
 
 
 # ---------------------------------------------------------------------
@@ -369,6 +364,7 @@ CSRF_TRUSTED_ORIGINS = [
 # ---------------------------------------------------------------------
 
 if not DEBUG:
+
     SECURE_PROXY_SSL_HEADER = (
         "HTTP_X_FORWARDED_PROTO",
         "https",
