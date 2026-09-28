@@ -5,14 +5,43 @@ import React, {
   useState,
 } from 'react'
 
+// ==================================================
+// AUTH CONTEXT
+// ==================================================
+
 const AuthContext = createContext(null)
 
-const API_URL = 'http://127.0.0.1:8000/api'
+// ==================================================
+// API URL
+// ==================================================
+//
+// Vercel:
+// VITE_API_URL=https://kec-fullstack.onrender.com/api
+//
+// Local development:
+// VITE_API_URL=http://127.0.0.1:8000/api
+//
+// The trailing slash is removed automatically.
+// ==================================================
+
+const API_URL = (
+  import.meta.env.VITE_API_URL ||
+  'http://127.0.0.1:8000/api'
+).replace(/\/+$/, '')
+
+
+// ==================================================
+// LOCAL STORAGE KEYS
+// ==================================================
 
 const STORAGE_KEY = 'kec_smart_campus_user'
 const ACCESS_TOKEN_KEY = 'kec_access_token'
 const REFRESH_TOKEN_KEY = 'kec_refresh_token'
 
+
+// ==================================================
+// AUTH PROVIDER
+// ==================================================
 
 export function AuthProvider({ children }) {
 
@@ -29,16 +58,19 @@ export function AuthProvider({ children }) {
 
     const initializeAuth = async () => {
 
-      const token =
-        localStorage.getItem(
-          ACCESS_TOKEN_KEY
-        )
+      const token = localStorage.getItem(
+        ACCESS_TOKEN_KEY
+      )
+
+
+      // No token = user is not logged in
 
       if (!token) {
 
         setLoading(false)
 
         return
+
       }
 
 
@@ -57,6 +89,8 @@ export function AuthProvider({ children }) {
         )
 
 
+        // Token is invalid / expired
+
         if (!response.ok) {
 
           localStorage.removeItem(
@@ -74,12 +108,14 @@ export function AuthProvider({ children }) {
           setUser(null)
 
           return
+
         }
 
 
-        const data =
-          await response.json()
+        const data = await response.json()
 
+
+        // Save latest user information
 
         localStorage.setItem(
           STORAGE_KEY,
@@ -119,21 +155,38 @@ export function AuthProvider({ children }) {
     password,
   }) => {
 
-    const response = await fetch(
-      `${API_URL}/auth/login/`,
-      {
-        method: 'POST',
+    let response
 
-        headers: {
-          'Content-Type': 'application/json',
-        },
+    try {
 
-        body: JSON.stringify({
-          username,
-          password,
-        }),
-      }
-    )
+      response = await fetch(
+        `${API_URL}/auth/login/`,
+        {
+          method: 'POST',
+
+          headers: {
+            'Content-Type': 'application/json',
+          },
+
+          body: JSON.stringify({
+            username,
+            password,
+          }),
+        }
+      )
+
+    } catch (error) {
+
+      console.error(
+        'Login network error:',
+        error
+      )
+
+      throw new Error(
+        'Unable to connect to the server. Please try again.'
+      )
+
+    }
 
 
     let data
@@ -149,11 +202,16 @@ export function AuthProvider({ children }) {
     }
 
 
+    // ==================================================
+    // LOGIN ERROR
+    // ==================================================
+
     if (!response.ok) {
 
       const message =
         data.detail ||
         data.non_field_errors?.[0] ||
+        data.message ||
         'Invalid username or password.'
 
 
@@ -162,19 +220,23 @@ export function AuthProvider({ children }) {
     }
 
 
-    // ----------------------------------------------
+    // ==================================================
     // SAVE ACCESS TOKEN
-    // ----------------------------------------------
+    // ==================================================
 
-    localStorage.setItem(
-      ACCESS_TOKEN_KEY,
-      data.access
-    )
+    if (data.access) {
+
+      localStorage.setItem(
+        ACCESS_TOKEN_KEY,
+        data.access
+      )
+
+    }
 
 
-    // ----------------------------------------------
+    // ==================================================
     // SAVE REFRESH TOKEN
-    // ----------------------------------------------
+    // ==================================================
 
     if (data.refresh) {
 
@@ -186,17 +248,20 @@ export function AuthProvider({ children }) {
     }
 
 
-    // ----------------------------------------------
+    // ==================================================
     // SAVE USER
-    // ----------------------------------------------
+    // ==================================================
 
-    localStorage.setItem(
-      STORAGE_KEY,
-      JSON.stringify(data.user)
-    )
+    if (data.user) {
 
+      localStorage.setItem(
+        STORAGE_KEY,
+        JSON.stringify(data.user)
+      )
 
-    setUser(data.user)
+      setUser(data.user)
+
+    }
 
 
     return data.user
@@ -218,9 +283,9 @@ export function AuthProvider({ children }) {
     phone,
   }) => {
 
-    // ----------------------------------------------
+    // ==================================================
     // CLEAN ROLE
-    // ----------------------------------------------
+    // ==================================================
 
     const selectedRole =
       String(role || '')
@@ -228,11 +293,12 @@ export function AuthProvider({ children }) {
         .toLowerCase()
 
 
-    // ----------------------------------------------
-    // CHOOSE REGISTRATION ENDPOINT
-    // ----------------------------------------------
+    // ==================================================
+    // SELECT REGISTRATION ENDPOINT
+    // ==================================================
 
     let registerUrl
+
 
     if (selectedRole === 'admin') {
 
@@ -252,23 +318,24 @@ export function AuthProvider({ children }) {
       selectedRole
     )
 
+
     console.log(
       'REGISTER URL:',
       registerUrl
     )
 
 
-    // ----------------------------------------------
+    // ==================================================
     // REQUEST BODY
-    // ----------------------------------------------
+    // ==================================================
 
     const body = {
 
       username:
-        username.trim(),
+        String(username || '').trim(),
 
       email:
-        email.trim(),
+        String(email || '').trim(),
 
       password,
 
@@ -284,18 +351,17 @@ export function AuthProvider({ children }) {
     }
 
 
-    // ----------------------------------------------
+    // ==================================================
     // STUDENT / FACULTY
-    // ----------------------------------------------
+    // ==================================================
     //
-    // Admin does NOT send role.
+    // Admin registration does not send role.
     //
-    // Django AdminRegisterSerializer automatically
-    // creates:
+    // Django AdminRegisterSerializer creates:
     //
     // role = admin
     //
-    // ----------------------------------------------
+    // ==================================================
 
     if (selectedRole !== 'admin') {
 
@@ -313,30 +379,50 @@ export function AuthProvider({ children }) {
     )
 
 
-    // ----------------------------------------------
+    // ==================================================
     // SEND REQUEST
-    // ----------------------------------------------
+    // ==================================================
 
-    const response = await fetch(
-      registerUrl,
-      {
-        method: 'POST',
+    let response
 
-        headers: {
-          'Content-Type': 'application/json',
-        },
+    try {
 
-        body: JSON.stringify(body),
-      }
-    )
+      response = await fetch(
+        registerUrl,
+        {
+          method: 'POST',
 
+          headers: {
+            'Content-Type': 'application/json',
+          },
+
+          body: JSON.stringify(body),
+        }
+      )
+
+    } catch (error) {
+
+      console.error(
+        'Registration network error:',
+        error
+      )
+
+      throw new Error(
+        'Unable to connect to the server. Please try again.'
+      )
+
+    }
+
+
+    // ==================================================
+    // RESPONSE
+    // ==================================================
 
     let data
 
     try {
 
-      data =
-        await response.json()
+      data = await response.json()
 
     } catch {
 
@@ -345,9 +431,9 @@ export function AuthProvider({ children }) {
     }
 
 
-    // ----------------------------------------------
-    // HANDLE ERROR
-    // ----------------------------------------------
+    // ==================================================
+    // HANDLE REGISTRATION ERROR
+    // ==================================================
 
     if (!response.ok) {
 
@@ -358,8 +444,11 @@ export function AuthProvider({ children }) {
       const message =
         Array.isArray(firstError)
           ? firstError[0]
-          : firstError ||
-            'Registration failed.'
+          : typeof firstError === 'string'
+            ? firstError
+            : data.detail ||
+              data.message ||
+              'Registration failed.'
 
 
       throw new Error(message)
@@ -367,9 +456,9 @@ export function AuthProvider({ children }) {
     }
 
 
-    // ----------------------------------------------
+    // ==================================================
     // VERIFY ADMIN ROLE
-    // ----------------------------------------------
+    // ==================================================
 
     if (
       selectedRole === 'admin' &&
@@ -383,9 +472,9 @@ export function AuthProvider({ children }) {
     }
 
 
-    // ----------------------------------------------
+    // ==================================================
     // VERIFY STUDENT / FACULTY ROLE
-    // ----------------------------------------------
+    // ==================================================
 
     if (
       selectedRole !== 'admin' &&
@@ -393,25 +482,31 @@ export function AuthProvider({ children }) {
     ) {
 
       throw new Error(
-        `Registration failed: server created this account as ${data.user?.role || 'unknown'}.`
+        `Registration failed: server created this account as ${
+          data.user?.role || 'unknown'
+        }.`
       )
 
     }
 
 
-    // ----------------------------------------------
+    // ==================================================
     // SAVE ACCESS TOKEN
-    // ----------------------------------------------
+    // ==================================================
 
-    localStorage.setItem(
-      ACCESS_TOKEN_KEY,
-      data.access
-    )
+    if (data.access) {
+
+      localStorage.setItem(
+        ACCESS_TOKEN_KEY,
+        data.access
+      )
+
+    }
 
 
-    // ----------------------------------------------
+    // ==================================================
     // SAVE REFRESH TOKEN
-    // ----------------------------------------------
+    // ==================================================
 
     if (data.refresh) {
 
@@ -423,17 +518,20 @@ export function AuthProvider({ children }) {
     }
 
 
-    // ----------------------------------------------
+    // ==================================================
     // SAVE USER
-    // ----------------------------------------------
+    // ==================================================
 
-    localStorage.setItem(
-      STORAGE_KEY,
-      JSON.stringify(data.user)
-    )
+    if (data.user) {
 
+      localStorage.setItem(
+        STORAGE_KEY,
+        JSON.stringify(data.user)
+      )
 
-    setUser(data.user)
+      setUser(data.user)
+
+    }
 
 
     return data.user
@@ -464,38 +562,73 @@ export function AuthProvider({ children }) {
     }
 
 
-    const response = await fetch(
-      `${API_URL}/auth/me/`,
-      {
-        method: 'PUT',
+    let response
 
-        headers: {
-          Authorization:
-            `Bearer ${token}`,
+    try {
 
-          'Content-Type':
-            'application/json',
-        },
+      response = await fetch(
+        `${API_URL}/auth/me/`,
+        {
+          method: 'PUT',
 
-        body:
-          JSON.stringify(updates),
-      }
-    )
+          headers: {
+            Authorization:
+              `Bearer ${token}`,
+
+            'Content-Type':
+              'application/json',
+          },
+
+          body:
+            JSON.stringify(updates),
+        }
+      )
+
+    } catch (error) {
+
+      console.error(
+        'Profile update network error:',
+        error
+      )
+
+      throw new Error(
+        'Unable to connect to the server.'
+      )
+
+    }
 
 
-    const data =
-      await response.json()
+    let data
 
+    try {
+
+      data = await response.json()
+
+    } catch {
+
+      data = {}
+
+    }
+
+
+    // ==================================================
+    // UPDATE ERROR
+    // ==================================================
 
     if (!response.ok) {
 
       throw new Error(
         data.detail ||
+        data.message ||
         'Unable to update profile.'
       )
 
     }
 
+
+    // ==================================================
+    // SAVE UPDATED USER
+    // ==================================================
 
     localStorage.setItem(
       STORAGE_KEY,
@@ -535,7 +668,7 @@ export function AuthProvider({ children }) {
 
 
   // ==================================================
-  // CONTEXT
+  // CONTEXT PROVIDER
   // ==================================================
 
   return (
@@ -560,9 +693,9 @@ export function AuthProvider({ children }) {
 }
 
 
-// ====================================================
-// USE AUTH
-// ====================================================
+// ==================================================
+// USE AUTH HOOK
+// ==================================================
 
 export function useAuth() {
 
